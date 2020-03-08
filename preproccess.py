@@ -2,16 +2,6 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder, MinMaxScaler
 
-import tensorflow as tf
-
-from tensorflow.keras.models import Model
-from tensorflow.keras.layers import Input, Reshape, Dot, Embedding, Dense
-from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.regularizers import l2
-from tensorflow.keras import backend as K
-from tensorflow.keras.regularizers import l1, l2
-from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
-
 df = pd.read_csv('./ml-100k/u.data', sep='\t', header=None, usecols=[0, 1, 2])
 df.columns = ['user_id', 'item_id', 'rating']
 df['rating'] = df['rating'].values.astype(np.float32)
@@ -19,9 +9,6 @@ df['rating'] = df['rating'].values.astype(np.float32)
 
 # data preparation
 user_means = df.groupby(['user_id'])
-# ['rating'].transform('mean')
-# fill missing values by some transform
-# df['rating'] = df['rating'].fillna(user_means)
 
 to_append = []
 
