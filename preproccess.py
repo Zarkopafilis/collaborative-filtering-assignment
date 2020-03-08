@@ -12,9 +12,15 @@ user_means = df.groupby(['user_id'])
 
 to_append = []
 
+cached_means = {}
+
+# takes some 30-60min to run depending on processing power
+
 # fill missing movies for each user
 for usr in df['user_id'].unique():
     mean = user_means.get_group(usr)['rating'].mean()
+    cached_means[usr] = mean
+
     print(f'Checking user_id: ${usr}')
     for item in df['item_id'].unique():
         if df[(df['user_id'] == usr) & (df['item_id'] == item)].any().any():
@@ -26,7 +32,8 @@ print(f'Appending {len(to_append)} elements')
 df = df.append(to_append)
 
 # mean centering for each user
-df['rating'] = df['rating'].subtract(user_means)
+df['rating'] = df.apply(lambda x: x - cached_means[x['user_id']])
+
 # scale rating for sigmoid output
 rating_scaler = MinMaxScaler()
 df['rating'] = rating_scaler.fit_transform(df['rating'].values.reshape(-1, 1))
